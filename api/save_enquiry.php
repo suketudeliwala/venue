@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 5. Types String: 28 characters total
     // s(10), i(1), i(5), s(2), i(2), s(5), i(1), s(2) = 28
-    $types = "ssssssssssiiiiisiisssssiss"; 
+    $types = "ssssssssssiiiiiissiisssssiss"; 
     
     $stmt->bind_param($types, 
         $tracking_no, $f_name, $s_date, $e_date, $s_time, $f_time, $duration, $f_type, $purpose, $details, 
