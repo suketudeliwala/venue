@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $org_full_name ?></title>
     <link rel="stylesheet" href="<?= $path_prefix ?>assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="<?= $path_prefix ?>assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'Inter', sans-serif;">
+
+<body class="d-flex flex-column min-vh-100" style="font-family: 'Inter', sans-serif;">
 
 <header class="py-3 border-bottom shadow-sm" style="background: linear-gradient(135deg, #001d4a, #006992);">
     <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
@@ -35,9 +37,14 @@
                 <li class="nav-item"><a class="nav-link" href="<?= $path_prefix ?>index.php">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Venues</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Check Availability</a></li>
-                <li class="nav-item"><a class="nav-link btn btn-warning text-dark ms-lg-3 px-3" href="<?= $path_prefix ?>admin/login.php">Admin Login</a></li>
+                <li class="nav-item">
+                    <a class="btn btn-warning fw-bold ms-lg-3 px-4 shadow-sm" href="<?= $path_prefix ?>admin/login.php" style="color: #001d4a !important;">
+                        <i class="bi bi-lock-fill me-1"></i> Admin Login
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
-<main class="py-4"></main>
+
+<main class="flex-grow-1"></main>

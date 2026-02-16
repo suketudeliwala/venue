@@ -1,44 +1,49 @@
-    </main>
-    <footer class="main-footer" style="background: linear-gradient(to right, #584D3C, #cfbb6eff);">
-        <div class="footer-left">
-            &copy; <?= date("Y") ?> <?= $org_full_name ?>. All rights reserved.
+</main> <footer class="py-4 mt-auto text-white" style="background: linear-gradient(to right, #001d4a, #27476e); border-top: 4px solid #eca400;">
+    <div class="container-fluid px-4">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                <p class="mb-0 small">&copy; <?= date("Y") ?> <?= $org_full_name ?>. All rights reserved.</p>
+            </div>
+            
+            <div class="col-md-4 text-center mb-3 mb-md-0">
+                <p class="mb-0 fw-bold" style="color: #eca400;">Developed by Compu Soft</p>
+            </div>
+            
+            <div class="col-md-4 text-center text-md-end">
+                <div class="d-flex justify-content-center justify-content-md-end align-items-center gap-3">
+                    <a href="#" class="text-white text-decoration-none"><i class="bi bi-facebook fs-5"></i></a>
+                    <a href="#" class="text-white text-decoration-none"><i class="bi bi-youtube fs-5"></i></a>
+                    <a href="mailto:<?= $org_comm_email ?>" class="text-white text-decoration-none"><i class="bi bi-envelope-fill fs-5"></i></a>
+                    
+                    <button onclick="toggleTheme()" class="btn btn-sm btn-outline-warning rounded-pill px-3 ms-2">
+                         <i class="bi bi-brightness-high"></i> Mode
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="footer-center">
-            Developed & Designed by Suketu Deliwala - Compu Soft
-        </div>
-        <div class="footer-right">
-            <a href="https://www.facebook.com/" target="_blank" class="btn btn-sm me-2"><img src="<?= $path_prefix ?>assets/images/facebook.png" height="30px" width="30px" alt="Facebook"></a>
-            <a href="https://x.com/" target="_blank" class="btn btn-sm me-2"><img src="<?= $path_prefix ?>assets/images/twitter.png"  height="30px" width="30px" alt="Twitter"></a>
-            <a href="https://www.linkedin.com/" target="_blank" class="btn btn-sm me-2"><img src="<?= $path_prefix ?>assets/images/linkedin.png" height="30px" width="30px"  alt="LinkedIn"></a>
-            <a href="https://www.youtube.com/@paramkeshavbaug2062/"  target="_blank" class="btn btn-sm me-2"><img src="<?= $path_prefix ?>assets/images/Youtube.png"  height="30px" width="30px" alt="YouTube"></a>
-            <a href="mailto:call2suketu@gmail.com" target="_blank" class="btn btn-sm me-2"><img src="<?= $path_prefix ?>assets/images/email.png"  height="30px" width="30px" alt="Email"></a>
-        </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
-    <script src="<?= $path_prefix ?>assets/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- ADDED CHART.JS HERE -->
+    </div>
+</footer>
 
-    <script>
-    function toggleTheme() {
-        const root = document.documentElement;
-        if (root.style.getPropertyValue('--bg-color') === '#f5f5f5') {
-            root.style.setProperty('--bg-color', '#1a1a1a');
-            root.style.setProperty('--text-color', '#eaeaea');
-            root.style.setProperty('--header-footer-bg', '#222');
-            root.style.setProperty('--nav-link-color', '#ffc107');
-        } else {
-            root.style.setProperty('--bg-color', '#f5f5f5');
-            root.style.setProperty('--text-color', '#333');
-            root.style.setProperty('--header-footer-bg', '#007bff');
-            root.style.setProperty('--nav-link-color', 'white');
-        }
-    }
-    </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<?= $path_prefix ?>assets/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    </body>
-    </html>
-    
+<script>
+function toggleTheme() {
+    const htmlTag = document.documentElement;
+    const currentMode = htmlTag.getAttribute('data-bs-theme');
+    const newMode = (currentMode === 'dark') ? 'light' : 'dark';
+    htmlTag.setAttribute('data-bs-theme', newMode);
+    localStorage.setItem('vms_theme', newMode);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('vms_theme') || 'light';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+});
+</script>
+
+</body>
+</html>

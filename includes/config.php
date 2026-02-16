@@ -1,25 +1,37 @@
 <?php
-// Database Configuration
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $servername = "localhost";
 $username = "root";
 $password = ""; 
-$dbname = "vms"; // Updated to your new database name
+$dbname = "vms"; 
 
 $conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Fetch Organization Settings from the 'organization_settings' table
+$org_settings = [];
+$res = $conn->query("SELECT * FROM organization_settings LIMIT 1");
+if ($res && $res->num_rows > 0) {
+    $org_settings = $res->fetch_assoc();
+} else {
+    // Basic fallback if table is empty
+    $org_settings = ['org_full_name' => 'Venue Management System'];
 }
 
-// Global Organization Settings for VMS
-$org_full_name = "VMS - Trust/NGO Management";
-$org_short_name = "VMS-NGO";
-$slogan = "Professional Venue Management for Welfare";
-$org_logo_path = "assets/images/org_logo.png";
-$path_prefix = (basename($_SERVER['PHP_SELF']) === 'index.php') ? '' : '../';
+// Global Variables
+$org_full_name = $org_settings['org_full_name'];
+$org_short_name = $org_settings['org_short_name'];
+$slogan        = $org_settings['slogan'];
+$org_regd      = $org_settings['org_regd_no'];
+$org_address   = $org_settings['org_address'];
+$org_comm_email      = $org_settings['org_comm_email'];
+$org_comm_phone      = $org_settings['org_comm_phone'];
+$org_logo_path = $org_settings['org_logo_path'];
+$path_prefix   = (basename($_SERVER['PHP_SELF']) === 'index.php') ? '' : '../';
 
-// Include the functions file (we will create this next for Royalty logic)
-if (file_exists($path_prefix . 'includes/functions.php')) {
-    include($path_prefix . 'includes/functions.php');
-}
+// Securely include functions once
+include_once($path_prefix . 'includes/functions.php');
 ?>

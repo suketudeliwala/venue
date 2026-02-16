@@ -3,39 +3,34 @@ include("includes/config.php");
 include("includes/header.php");
 ?>
 
-<div class="container py-5">
-    <div class="row align-items-center mb-5">
-        <div class="col-lg-6">
-            <h1 class="display-4 fw-bold text-primary mb-3">Professional Venues for Your Every Need</h1>
-            <p class="lead text-muted">From grand weddings to corporate seminars, we provide the perfect space for your community events. Your bookings directly support our charity activities.</p>
-            <div class="d-flex gap-3">
-                <a href="#venues" class="btn btn-primary btn-lg px-4 rounded-pill">View All Venues</a>
-                <a href="#" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Enquire Now</a>
-            </div>
-        </div>
-        <div class="col-lg-6 mt-4 mt-lg-0">
-            <img src="assets/images/about/happyfamily.png" alt="VMS Hero" class="img-fluid rounded-4 shadow">
+<section class="hero-section text-white py-5" style="background: linear-gradient(rgba(0,29,74,0.8), rgba(0,29,74,0.8)), url('assets/images/hero_bg.jpg'); background-size: cover;">
+    <div class="container text-center py-5">
+        <h1 class="display-3 fw-bold mb-3"><?= $org_full_name ?></h1>
+        <p class="lead mb-4"><?= $slogan ?></p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="#venue-gallery" class="btn btn-warning btn-lg px-4">View All Venues</a>
+            <a href="pages/enquiry.php" class="btn btn-outline-light btn-lg px-4">Enquire Now</a>
         </div>
     </div>
+</section>
 
-    <div id="venues" class="row g-4 pt-5">
-        <h2 class="text-center mb-5">Our Available Facilities</h2>
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 rounded-3">
-                <div class="bg-light p-5 text-center rounded-top">
-                    <i class="bi bi-house-door display-1 text-primary"></i>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title fw-bold text-navy">Grand Banquet Hall</h5>
-                    <p class="text-muted small">Capacity: 500 Persons | A/C Available</p>
-                    <hr>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-primary fw-bold">Starts ₹15,000</span>
-                        <a href="pages/venue_details.php" class="btn btn-sm btn-outline-primary">Details</a>
-                    </div>
-                </div>
+<div class="container my-5" id="venue-gallery">
+    <h2 class="text-center mb-4">Our Available Venues</h2>
+    
+    <div class="d-flex flex-nowrap overflow-auto pb-4 gap-4" style="scrollbar-width: thin;">
+        <?php
+        $venues = $conn->query("SELECT * FROM vms_venues WHERE status = 'Active'");
+        while($v = $venues->fetch_assoc()):
+        ?>
+        <div class="card border-0 shadow-sm" style="min-width: 300px; border-radius: 15px;">
+            <img src="assets/images/venues/<?= $v['venue_image'] ?>" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;" alt="<?= $v['venue_name'] ?>">
+            <div class="card-body">
+                <h5 class="fw-bold text-navy"><?= $v['venue_name'] ?></h5>
+                <p class="small text-muted mb-2"><i class="bi bi-people me-1"></i> Capacity: <?= $v['capacity_person'] ?></p>
+                <a href="pages/check_availability.php?id=<?= $v['id'] ?>" class="btn btn-sm btn-outline-primary w-100">Check Availability</a>
             </div>
         </div>
+        <?php endwhile; ?>
     </div>
 </div>
 
