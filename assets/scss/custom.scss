@@ -1,0 +1,33 @@
+// 1. Define your custom brand colors
+$navy-blue: #001d4a;
+$light-blue: #006992;
+$dark-grey: #27476e;
+$soft-grey: #f8f9fa;
+$black: #1a1a1a;
+
+// 2. Override Bootstrap Variables
+$primary: $navy-blue;
+$secondary: $light-blue;
+$body-bg: $soft-grey;
+$body-color: $black;
+
+// 3. Import Bootstrap
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+// 4. Custom Dark Mode overrides
+[data-bs-theme="dark"] {
+    $body-bg: $black;
+    $body-color: $soft-grey;
+    .card {
+        background-color: #222;
+        border-color: $dark-grey;
+    }
+}
+
+// 5. Professional Typography & UI Classes
+.vms-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    &:hover { transform: translateY(-5px); }
+}
