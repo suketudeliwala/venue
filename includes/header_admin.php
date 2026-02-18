@@ -27,6 +27,8 @@
                     <a href="customer_list.php" class="nav-link text-light small">Customer Master</a>
                     <a href="vendor_list.php" class="nav-link text-light small">Vendor Master</a>
                     <a href="equipment_list.php" class="nav-link text-light small">Equipment Master</a>
+                    <a href="venue_rates.php" class="nav-link text-light small">Venue Rate Master</a>
+                    <a href="blocked_dates.php" class="nav-link text-light small">Reserved Dates Master</a>
                 </div>
             </li>
             <li class="nav-item">
