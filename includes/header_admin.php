@@ -32,7 +32,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a href="booking_process.php" class="nav-link text-white"><i class="bi bi-journal-check me-2"></i> New Booking</a>
+                <a href="booking_new.php" class="nav-link text-white"><i class="bi bi-journal-check me-2"></i> New Booking</a>
             </li>
             <li class="nav-item">
                 <a href="reports_mis.php" class="nav-link text-white"><i class="bi bi-graph-up me-2"></i> MIS Reports</a>

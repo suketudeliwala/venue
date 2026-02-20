@@ -2,41 +2,44 @@
 include("../includes/config.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // 1. Begin Transaction
     $conn->begin_transaction();
 
     try {
-        // 2. Capture Master Data
-        $customer_id = intval($_POST['customer_id']);
+        // --- STEP 1: CAPTURE FORM DATA ---
+        $applicant_name = mysqli_real_escape_string($conn, $_POST['applicant_name']);
+        $mobile = mysqli_real_escape_string($conn, $_POST['applicant_mobile']);
+        $email = mysqli_real_escape_string($conn, $_POST['applicant_email']);
+        $is_member = intval($_POST['is_member']);
         $function_name = mysqli_real_escape_string($conn, $_POST['function_name']);
-        $tracking_no = mysqli_real_escape_string($conn, $_POST['tracking_no']);
+        
+        // Fix: If tracking_no is empty in POST, generate a new one
+        $tracking_no = !empty($_POST['tracking_no']) ? mysqli_real_escape_string($conn, $_POST['tracking_no']) : 'BK-' . date('YmdHis');
         $enquiry_id = !empty($_POST['enquiry_id']) ? intval($_POST['enquiry_id']) : NULL;
-        
-        // Vendors
-        $decorator = !empty($_POST['decorator_id']) ? intval($_POST['decorator_id']) : NULL;
-        $caterer = !empty($_POST['caterer_id']) ? intval($_POST['caterer_id']) : NULL;
-        
-        // Aggregate totals (Calculated on Frontend, Verified here)
-        $total_rent = 0;
-        $total_rsd = 0;
 
-        // 3. Insert into vms_booking_master
+        // --- STEP 2: AUTO-REGISTER CUSTOMER ---
+        $check_cust = $conn->query("SELECT id FROM vms_customers WHERE mobile = '$mobile' LIMIT 1");
+        if ($check_cust->num_rows == 0) {
+            $ins_cust = $conn->prepare("INSERT INTO vms_customers (contact_person, mobile, email, is_member, customer_type) VALUES (?, ?, ?, ?, 'Customer')");
+            $ins_cust->bind_param("sssi", $applicant_name, $mobile, $email, $is_member);
+            $ins_cust->execute();
+            $customer_id = $conn->insert_id;
+        } else {
+            $customer_id = $check_cust->fetch_assoc()['id'];
+        }
+
+        // --- STEP 3: INSERT INTO BOOKING MASTER ---
+        // Ensure your vms_booking_master table has the 'is_member' column
         $stmt_m = $conn->prepare("INSERT INTO vms_booking_master (
-            enquiry_id, tracking_no, customer_id, function_name, 
-            decorator_id, caterer_id, status
-        ) VALUES (?, ?, ?, ?, ?, ?, 'Confirmed')");
+            enquiry_id, tracking_no, customer_id, function_name, is_member, status
+        ) VALUES (?, ?, ?, ?, ?, 'Confirmed')");
         
-        $stmt_m->bind_param("isisii", $enquiry_id, $tracking_no, $customer_id, $function_name, $decorator, $caterer);
+        $stmt_m->bind_param("isisi", $enquiry_id, $tracking_no, $customer_id, $function_name, $is_member);
         $stmt_m->execute();
         $booking_id = $conn->insert_id;
 
-        // 4. Loop through Venue Slots
-        $stmt_s = $conn->prepare("INSERT INTO vms_booking_slots (
-            booking_id, venue_id, booking_date, start_time, finish_time, 
-            slot_rent, slot_rsd
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)");
-
-        // Arrays from the dynamic form rows
+        // --- STEP 4: LOOP THROUGH SLOTS ---
+        $total_rent = 0;
+        $total_rsd = 0;
         $venues = $_POST['slot_venue_id'];
         $dates  = $_POST['slot_date'];
         $starts = $_POST['slot_start'];
@@ -44,43 +47,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $rents  = $_POST['slot_rent'];
         $rsds   = $_POST['slot_rsd'];
 
+        $stmt_s = $conn->prepare("INSERT INTO vms_booking_slots (booking_id, venue_id, booking_date, start_time, finish_time, slot_rent, slot_rsd) VALUES (?, ?, ?, ?, ?, ?, ?)");
+
         foreach ($venues as $i => $v_id) {
-            $v_id = intval($v_id);
-            $b_date = $dates[$i];
-            $s_time = $starts[$i];
-            $f_time = $ends[$i];
             $s_rent = floatval($rents[$i]);
             $s_rsd  = floatval($rsds[$i]);
-
             $total_rent += $s_rent;
             $total_rsd  += $s_rsd;
-
-            $stmt_s->bind_param("issssdd", $booking_id, $v_id, $b_date, $s_time, $f_time, $s_rent, $s_rsd);
+            $stmt_s->bind_param("issssdd", $booking_id, $v_id, $dates[$i], $starts[$i], $ends[$i], $s_rent, $s_rsd);
             $stmt_s->execute();
         }
 
-        // 5. Update Master with Final Calculated Totals & Taxes
-        $tax = $total_rent * 0.18; // 18% Total GST
+        // --- STEP 5: FINANCIAL TOTALS ---
+        $tax = $total_rent * 0.18; 
         $net = $total_rent + $tax + $total_rsd;
+        $conn->query("UPDATE vms_booking_master SET total_rent=$total_rent, total_rsd=$total_rsd, total_tax=$tax, net_payable=$net WHERE id=$booking_id");
 
-        $update_sql = "UPDATE vms_booking_master SET total_rent = ?, total_rsd = ?, total_tax = ?, net_payable = ? WHERE id = ?";
-        $stmt_u = $conn->prepare($update_sql);
-        $stmt_u->bind_param("ddddd", $total_rent, $total_rsd, $tax, $net, $booking_id);
-        $stmt_u->execute();
+        if ($enquiry_id) { $conn->query("UPDATE vms_enquiries SET status = 'Converted' WHERE id = $enquiry_id"); }
 
-        // 6. If converted from Enquiry, update Enquiry status
-        if ($enquiry_id) {
-            $conn->query("UPDATE vms_enquiries SET status = 'Converted' WHERE id = $enquiry_id");
-        }
-
-        // 7. Commit Transaction
         $conn->commit();
-        header("Location: ../admin/booking_view.php?id=$booking_id&status=success&msg=Booking Confirmed Successfully");
-
+        header("Location: ../admin/booking_list.php?status=success&msg=Booking Saved");
     } catch (Exception $e) {
-        // Rollback on any error
         $conn->rollback();
-        header("Location: ../admin/booking_new.php?status=error&msg=System Error: " . $e->getMessage());
+        die("Error: " . $e->getMessage());
     }
 }
 ?>
