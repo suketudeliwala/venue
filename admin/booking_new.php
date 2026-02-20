@@ -16,7 +16,8 @@ include("../includes/header_admin.php");
                         <select id="fetch_enquiry" class="form-select select2">
                             <option value="">-- Direct Booking (No Enquiry) --</option>
                             <?php 
-                            $enq_list = $conn->query("SELECT id, tracking_no, applicant_name FROM vms_enquiries WHERE status != 'Converted' ORDER BY id DESC");
+                            // Update this line in your booking_new.php
+                        $enq_list = $conn->query("SELECT id, tracking_no, applicant_name FROM vms_enquiries WHERE status NOT IN ('Converted', 'Rejected') ORDER BY id DESC");
                             while($el = $enq_list->fetch_assoc()) {
                                 echo "<option value='{$el['id']}'>{$el['tracking_no']} - {$el['applicant_name']}</option>";
                             }

@@ -2,7 +2,8 @@
 include("../includes/config.php"); 
 include("../includes/header_admin.php"); 
 
-$sql = "SELECT b.*, c.contact_person, 
+// Added c.mobile to the SELECT and confirmed column names for Rent/RSD
+$sql = "SELECT b.*, c.contact_person, c.mobile, 
         (SELECT COUNT(*) FROM vms_booking_slots WHERE booking_id = b.id) as slot_count 
         FROM vms_booking_master b 
         JOIN vms_customers c ON b.customer_id = c.id 
@@ -30,28 +31,32 @@ $res = $conn->query($sql);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while($row = $res->fetch_assoc()): ?>
-                    <tr>
-                        <td><span class="fw-bold text-primary"><?= $row['tracking_no'] ?></span></td>
-                        <td>
-                            <div class="fw-bold"><?= htmlspecialchars($row['function_name']) ?></div>
-                            <small class="text-muted"><?= htmlspecialchars($row['contact_person']) ?></small>
-                        </td>
-                        <td><span class="badge bg-info text-dark"><?= $row['slot_count'] ?> Slot(s)</span></td>
-                        <td>₹<?= number_format($row['total_rent'], 2) ?></td>
-                        <td>₹<?= number_format($row['total_rsd'], 2) ?></td>
-                        <td>
-                            <span class="badge bg-<?= $row['status'] == 'Confirmed' ? 'success' : 'danger' ?>">
-                                <?= $row['status'] ?>
-                            </span>
-                        </td>
-                        <td class="text-end">
-                            <a href="booking_view.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
-                            <a href="booking_edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
-                            <button class="btn btn-sm btn-outline-danger" onclick="cancelBooking(<?= $row['id'] ?>)"><i class="bi bi-x-circle"></i></button>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
+                    <?php if($res->num_rows > 0): ?>
+                        <?php while($row = $res->fetch_assoc()): ?>
+                        <tr>
+                            <td><span class="fw-bold text-primary"><?= $row['tracking_no'] ?></span></td>
+                            <td>
+                                <div class="fw-bold"><?= htmlspecialchars($row['function_name']) ?></div>
+                                <small class="text-muted"><?= htmlspecialchars($row['contact_person']) ?> - <?= htmlspecialchars($row['mobile']) ?></small>
+                            </td>
+                            <td><span class="badge bg-info text-dark"><?= $row['slot_count'] ?> Slot(s)</span></td>
+                            <td>₹<?= number_format($row['total_rent'], 2) ?></td>
+                            <td>₹<?= number_format($row['total_rsd'], 2) ?></td>
+                            <td>
+                                <span class="badge bg-<?= $row['status'] == 'Confirmed' ? 'success' : 'danger' ?>">
+                                    <?= $row['status'] ?>
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <a href="booking_view.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                                <a href="booking_edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                                <button class="btn btn-sm btn-outline-danger" onclick="cancelBooking(<?= $row['id'] ?>)"><i class="bi bi-x-circle"></i></button>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="7" class="text-center py-4 text-muted">No bookings found.</td></tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

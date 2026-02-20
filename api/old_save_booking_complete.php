@@ -72,10 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        if ($enquiry_id) {
-            $conn->query("UPDATE vms_enquiries SET status = 'Converted' WHERE id = $enquiry_id");
-        }
-
         $conn->commit();
         
         if($debug) {
