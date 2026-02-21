@@ -28,6 +28,7 @@
                     <a href="vendor_list.php" class="nav-link text-light small">Vendor Master</a>
                     <a href="equipment_list.php" class="nav-link text-light small">Equipment Master</a>
                     <a href="venue_rates.php" class="nav-link text-light small">Venue Rate Master</a>
+                    <a href="cancellation_policy.php" class="nav-link text-light small">Cancellation Policy</a>
                     <a href="blocked_dates.php" class="nav-link text-light small">Reserved Dates Master</a>
                 </div>
             </li>

@@ -1,18 +1,9 @@
 <?php
 include("../includes/config.php");
-
-// DEBUG TOGGLE: Set to true to see exactly what is happening
-$debug = true; 
+$debug = false; // Set to true only if you need to see raw data
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if($debug) {
-        echo "<pre>--- DEBUG DATA RECEIVED ---<br>";
-        print_r($_POST);
-        echo "</pre>";
-    }
-
     $conn->begin_transaction();
-
     try {
         $applicant_name = mysqli_real_escape_string($conn, $_POST['applicant_name']);
         $mobile = mysqli_real_escape_string($conn, $_POST['applicant_mobile']);
@@ -22,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $tracking_no = !empty($_POST['tracking_no']) ? mysqli_real_escape_string($conn, $_POST['tracking_no']) : 'BK-' . date('YmdHis');
         $enquiry_id = !empty($_POST['enquiry_id']) ? intval($_POST['enquiry_id']) : NULL;
 
-        // --- STEP 1: CUSTOMER CHECK ---
+        // STEP 1: CUSTOMER CHECK/AUTO-REGISTER
         $check_cust = $conn->query("SELECT id FROM vms_customers WHERE mobile = '$mobile' LIMIT 1");
         if ($check_cust->num_rows == 0) {
             $ins_cust = $conn->prepare("INSERT INTO vms_customers (contact_person, mobile, email, is_member, customer_type) VALUES (?, ?, ?, ?, 'Customer')");
@@ -33,64 +24,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $customer_id = $check_cust->fetch_assoc()['id'];
         }
 
-        // --- STEP 2: THE "PROBLEM" INSERT ---
-        // We will use a standard query here instead of prepare to make debugging easier
-        $sql_master = "INSERT INTO vms_booking_master 
-                      (enquiry_id, tracking_no, customer_id, function_name, is_member, status) 
-                      VALUES 
-                      (".($enquiry_id ?? 'NULL').", '$tracking_no', $customer_id, '$function_name', $is_member, 'Confirmed')";
-        
-        if($debug) echo "Executing Query: " . $sql_master . "<br>";
-
-        if (!$conn->query($sql_master)) {
-            throw new Exception("Master Insert Failed: " . $conn->error);
-        }
-        
+        // STEP 2: MASTER INSERT
+        $stmt_m = $conn->prepare("INSERT INTO vms_booking_master (enquiry_id, tracking_no, customer_id, function_name, is_member, status) VALUES (?, ?, ?, ?, ?, 'Confirmed')");
+        $stmt_m->bind_param("isisi", $enquiry_id, $tracking_no, $customer_id, $function_name, $is_member);
+        $stmt_m->execute();
         $booking_id = $conn->insert_id;
 
-        // --- STEP 3: SLOTS ---
+        // STEP 3: SLOTS INSERT (With slot_rate_id)
+        $total_rent = 0; $total_rsd = 0;
         $venues = $_POST['slot_venue_id'];
         $dates  = $_POST['slot_date'];
         $starts = $_POST['slot_start'];
         $ends   = $_POST['slot_end'];
+        $rates  = $_POST['slot_rate_id']; // Added this
         $rents  = $_POST['slot_rent'];
         $rsds   = $_POST['slot_rsd'];
 
+        // Added an 'i' for slot_rate_id in the bind_param
+        $stmt_s = $conn->prepare("INSERT INTO vms_booking_slots (booking_id, venue_id, booking_date, start_time, finish_time, slot_rate_id, slot_rent, slot_rsd) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
         foreach ($venues as $i => $v_id) {
-            $r = floatval($rents[$i]);
-            $d = floatval($rsds[$i]);
-            $v = intval($v_id);
-            $dt = $dates[$i];
-            $st = $starts[$i];
-            $et = $ends[$i];
+            $r_amt = floatval($rents[$i]);
+            $d_amt = floatval($rsds[$i]);
+            $r_id  = intval($rates[$i]);
+            $total_rent += $r_amt;
+            $total_rsd  += $d_amt;
 
-            $sql_slot = "INSERT INTO vms_booking_slots (booking_id, venue_id, booking_date, start_time, finish_time, slot_rent, slot_rsd) 
-                         VALUES ($booking_id, $v, '$dt', '$st', '$et', $r, $d)";
-            
-            if (!$conn->query($sql_slot)) {
-                throw new Exception("Slot Insert Failed at index $i: " . $conn->error);
-            }
+            $stmt_s->bind_param("issssidd", $booking_id, $v_id, $dates[$i], $starts[$i], $ends[$i], $r_id, $r_amt, $d_amt);
+            $stmt_s->execute();
         }
 
-        if ($enquiry_id) {
-            $conn->query("UPDATE vms_enquiries SET status = 'Converted' WHERE id = $enquiry_id");
-        }
+        // STEP 4: FINANCIAL UPDATES
+        $tax = $total_rent * 0.18; 
+        $net = $total_rent + $tax + $total_rsd;
+        $conn->query("UPDATE vms_booking_master SET total_rent=$total_rent, total_rsd=$total_rsd, total_tax=$tax, net_payable=$net WHERE id=$booking_id");
+
+        if ($enquiry_id) { $conn->query("UPDATE vms_enquiries SET status = 'Converted' WHERE id = $enquiry_id"); }
 
         $conn->commit();
-        
-        if($debug) {
-            echo "Success! Booking ID: " . $booking_id;
-            exit; 
-        }
-
         header("Location: ../admin/booking_list.php?status=success");
-
     } catch (Exception $e) {
         $conn->rollback();
-        echo "<h3 style='color:red'>DETAILED ERROR:</h3>";
-        echo $e->getMessage();
-        echo "<br><br><strong>Note:</strong> If it says 'Unknown column is_member', go to phpMyAdmin, open vms_booking_master, and click the 'Structure' tab. Ensure it is exactly 'is_member' with no leading spaces.";
-        exit;
+        die("Error: " . $e->getMessage());
     }
 }
 ?>

@@ -26,6 +26,7 @@ $res = $conn->query($sql);
                         <th>Venues/Slots</th>
                         <th>Total Rent</th>
                         <th>Total RSD</th>
+                        <th>Balance Due</th>
                         <th>Status</th>
                         <th class="text-end">Actions</th>
                     </tr>
@@ -42,6 +43,14 @@ $res = $conn->query($sql);
                             <td><span class="badge bg-info text-dark"><?= $row['slot_count'] ?> Slot(s)</span></td>
                             <td>₹<?= number_format($row['total_rent'], 2) ?></td>
                             <td>₹<?= number_format($row['total_rsd'], 2) ?></td>
+                            <?php 
+                            $total_paid = $conn->query("SELECT SUM(total_amount) as paid FROM vms_receipts WHERE booking_id = ".$row['id'])->fetch_assoc()['paid'] ?? 0;
+                            $balance = $row['net_payable'] - $total_paid;
+                            ?>
+                            <!-- <td>₹<?= number_format($row['total_rsd'], 2) ?></td> -->
+                            <td class="fw-bold <?= ($balance > 0) ? 'text-danger' : 'text-success' ?>">
+                                ₹<?= number_format($balance, 2) ?>
+                            </td>
                             <td>
                                 <span class="badge bg-<?= $row['status'] == 'Confirmed' ? 'success' : 'danger' ?>">
                                     <?= $row['status'] ?>
