@@ -32,9 +32,36 @@
                     <a href="blocked_dates.php" class="nav-link text-light small">Reserved Dates Master</a>
                 </div>
             </li>
+
             <li class="nav-item">
-                <a href="booking_list.php" class="nav-link text-white"><i class="bi bi-journal-check me-2"></i> New Booking</a>
+                <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#tranMenu">
+                    <span><i class="bi bi-folder2-open me-2"></i> Transactions</span>
+                    <i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse ps-3" id="tranMenu">
+                    <a href="booking_list.php" class="nav-link text-light small"><i class="bi bi-journal-check me-2"></i>New Booking</a>
+                    <a href="utilization_new.php" class="nav-link text-light small">Utilization</a>
+                    <a href="trans_.php" class="nav-link text-light small">Transaction3</a>
+                </div>
             </li>
+
+            <!-- <li class="nav-item">
+                <a href="booking_list.php" class="nav-link text-white"><i class="bi bi-journal-check me-2"></i> New Booking</a>
+            </li> -->
+
+            <li class="nav-item">
+                <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#reportMenu">
+                    <span><i class="bi bi-folder2-open me-2"></i> Reports</span>
+                    <i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse ps-3" id="reportMenu">
+                    <a href="report_receipts.php" class="nav-link text-light small">Receipts</a>
+                    <a href="report_.php" class="nav-link text-light small">Report 2</a>
+                    <a href="report_.php" class="nav-link text-light small">Report 2</a>
+                    <a href="report_.php" class="nav-link text-light small">Report 2</a>
+                </div>
+            </li>
+
             <li class="nav-item">
                 <a href="reports_mis.php" class="nav-link text-white"><i class="bi bi-graph-up me-2"></i> MIS Reports</a>
             </li>

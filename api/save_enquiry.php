@@ -42,13 +42,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 4. SQL with EXACTLY 28 Question Marks
     $sql = "INSERT INTO vms_enquiries (
-        tracking_no, function_name, start_date, end_date, start_time, finish_time, duration, 
+        tracking_no, status, function_name, start_date, end_date, start_time, finish_time, duration, 
         function_type, purpose, function_details, approx_attendees, 
         need_decorator, need_caterer, need_sound, need_wifi, need_manager, 
         other_services, joint_org_name, is_political, is_ticketed, 
         company_name, applicant_name, applicant_email, applicant_mobile, applicant_address, 
         is_member, member_no, equipment_requested
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, 'New', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
 

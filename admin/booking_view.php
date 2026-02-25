@@ -78,6 +78,7 @@ $grand_balance = $bal_rent + $bal_rsd;
                                 <th>Date / Time</th>
                                 <th>Rent Type</th>
                                 <th class="text-end">Rent Amount</th>
+                                <th class="text-end">RSD Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +88,7 @@ $grand_balance = $bal_rent + $bal_rsd;
                                 <td><?= date('d-M-y', strtotime($s['booking_date'])) ?><br><small><?= $s['start_time'] ?>-<?= $s['finish_time'] ?></small></td>
                                 <td><span class="badge bg-info text-dark"><?= $s['duration_label'] ?? 'Custom' ?></span></td>
                                 <td class="text-end">₹<?= number_format($s['slot_rent'], 2) ?></td>
+                                <td class="text-end">₹<?= number_format($s['slot_rsd'], 2) ?></td>
                             </tr>
                             <?php endwhile; ?>
                         </tbody>
@@ -162,10 +164,13 @@ $grand_balance = $bal_rent + $bal_rsd;
                         <td class="text-end">₹<?= number_format($r['amount_rsd'], 2) ?></td>
                         <td class="text-end fw-bold">₹<?= number_format($r['total_amount'], 2) ?></td>
                         <td class="text-center d-print-none">
+                            <a href="receipt_print_a5.php?id=<?= $r['id'] ?>" target="_blank" class="btn btn-sm btn-outline-dark" title="Print Receipt">
+                                    <i class="bi bi-printer"></i>
+                            </a>
                             <a href="receipt_edit.php?id=<?= $r['id'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
-                            <a href="../api/delete_receipt.php?id=<?= $r['id'] ?>&booking_id=<?= $id ?>" 
-                               class="btn btn-sm btn-outline-danger" 
-                               onclick="return confirm('Delete this receipt?')"><i class="bi bi-trash"></i></a>
+                                <a href="../api/delete_receipt.php?id=<?= $r['id'] ?>&booking_id=<?= $id ?>" 
+                                class="btn btn-sm btn-outline-danger" 
+                                onclick="return confirm('Delete this receipt?')"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
                     <?php endwhile; else: ?>
