@@ -48,6 +48,14 @@ $outstanding = $row['net_payable'] - $total_paid;
 
 <div class="container py-4">
     <div class="card shadow border-0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Utilization Report</h4>
+            <a href="report_utilization.php" class="btn btn-secondary shadow-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+        
+        
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Utilization Report for: <span class="text-warning"><?= htmlspecialchars($row['venue_name']) ?></span></h5>
             <span class="badge bg-primary">Ref: <?= htmlspecialchars($row['b_no']) ?></span>

@@ -15,7 +15,7 @@
 <header class="py-3 border-bottom shadow-sm" style="background: linear-gradient(135deg, #001d4a, #006992);">
     <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
         <a href="<?= $path_prefix ?>index.php" class="text-decoration-none d-flex align-items-center">
-            <img src="<?= $path_prefix ?><?= $org_logo_path ?>" alt="Logo" height="50" class="me-3">
+            <img src="<?= $path_prefix ?><?= $org_logo_path ?>" alt="Logo" width="80" height="80" class="me-3">
             <div class="text-white">
                 <h1 class="h4 mb-0"><?= $org_full_name ?></h1>
                 <small class="opacity-75"><?= $slogan ?></small>

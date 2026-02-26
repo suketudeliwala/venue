@@ -86,4 +86,3 @@ $res = $conn->query($sql);
         </div>
     </div>
 </div>
-<?php include("../includes/footer.php"); ?>

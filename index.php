@@ -5,7 +5,7 @@ include("includes/header.php");
 
 <section class="hero-section text-white py-5" style="background: linear-gradient(rgba(0,29,74,0.8), rgba(0,29,74,0.8)), url('assets/images/hero_bg.jpg'); background-size: cover;">
     <div class="container text-center py-5">
-        <h1 class="display-3 fw-bold mb-3"><?= $org_full_name ?></h1>
+        <h1 class="display-3 fw-bold mb-3" style=" color: white;"><?= $org_full_name ?></h1>
         <p class="lead mb-4"><?= $slogan ?></p>
         <div class="d-flex justify-content-center gap-3">
             <a href="#venue-gallery" class="btn btn-warning btn-lg px-4">View All Venues</a>

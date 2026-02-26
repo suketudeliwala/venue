@@ -58,7 +58,8 @@ $res = $conn->query($sql);
                         <?php if($row['report_id']): ?>
                             <?php if($row['booking_status'] != 'Settled'): ?>
                                 <a href="utilization_edit.php?id=<?= $row['report_id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
-                            <?php else: ?>
+                                <a href="utilization_print.php?id=<?= $row['report_id'] ?>" target="_blank" class="btn btn-sm btn-outline-dark"> <i class="bi bi-printer"></i> Print </a>
+                                <?php else: ?>
                                 <button class="btn btn-sm btn-secondary" disabled>Billed</button>
                             <?php endif; ?>
                         <?php else: ?>

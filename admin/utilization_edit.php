@@ -30,8 +30,15 @@ $outstanding = $data['net_payable'] - ($paid_data['paid'] ?? 0);
 ?>
 
 <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Edit Utilization Report</h4>
+        <a href="report_utilization.php" class="btn btn-secondary shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+
     <div class="card shadow border-0">
-        <div class="card-header bg-primary text-white d-flex justify-content-between">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Edit Utilization: <?= htmlspecialchars($data['venue_name']) ?></h5>
             <span>Ref: <?= $data['b_no'] ?></span>
         </div>
@@ -63,7 +70,7 @@ $outstanding = $data['net_payable'] - ($paid_data['paid'] ?? 0);
                             <input type="time" name="actual_end" class="form-control" value="<?= $data['actual_end_time'] ?>" required></div>
                         <div class="col-6"><label class="small">EB Start</label>
                             <input type="number" step="0.01" name="eb_start" class="form-control" value="<?= $data['eb_reading_start'] ?>"></div>
-                        <div class="col-6"><label class="small">EB End</label>
+                        <div class="col-6"><label class="small">EB Reading End</label>
                             <input type="number" step="0.01" name="eb_end" class="form-control" value="<?= $data['eb_reading_end'] ?>"></div>
                     </div>
                 </div>
