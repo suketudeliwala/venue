@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ) VALUES (?, ?, CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Final')");
 
         // Types String: 14 parameters (i, s, d, d, d, d, d, d, d, d, d, d, s)
-        $stmt->bind_param("issdddddddddds", 
+        $stmt->bind_param("isdddddddddds", 
             $booking_id, $invoice_no, $base_rent, $damages, 
             $extra_services, $discount, $taxable_amount, $cgst, 
             $sgst, $grand_total, $advance_paid, $final_balance, $narration

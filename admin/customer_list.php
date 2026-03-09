@@ -18,8 +18,13 @@ $res = $conn->query("SELECT * FROM vms_customers $where ORDER BY contact_person 
                 <div class="col-md-6">
                     <input type="text" name="search" class="form-control" placeholder="Search by Name, Company or Mobile..." value="<?= htmlspecialchars($search) ?>">
                 </div>
+                <!-- <div class="col-md-6 text-end">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                    <a href="customer_add.php" class="btn btn-success"><i class="bi bi-person-plus"></i> Add New Customer</a>
+                </div> -->
                 <div class="col-md-6 text-end">
                     <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                    <a href="customer_add_enq.php" class="btn btn-info text-white"><i class="bi bi-person-plus"></i> Add from Enquiry</a>
                     <a href="customer_add.php" class="btn btn-success"><i class="bi bi-person-plus"></i> Add New Customer</a>
                 </div>
             </form>

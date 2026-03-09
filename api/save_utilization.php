@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Corrected Types String: 15 parameters
     // i(2), s(2), d(2), i(2), s(1), d(1), s(1), d(1), i(1), s(1)
-    $types = "iisssddiissddis"; 
+    $types = "iissddiisdsdis"; 
 
     $stmt->bind_param($types, 
         $b_id, 

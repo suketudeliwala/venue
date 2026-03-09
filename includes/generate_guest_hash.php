@@ -1,10 +1,16 @@
 <?php
 // generate_guest_hash.php
-$plain_guest_password = "mpavs@Gurukul_6"; // Choose a strong default guest password
+$plain_guest_password = "guru@Vinaya_9"; // Choose a strong default guest password
 $hashed_guest_password = password_hash($plain_guest_password, PASSWORD_BCRYPT);
 echo "Plain Guest Password: " . $plain_guest_password . "<br>";
 echo "Hashed Guest Password: " . $hashed_guest_password . "<br>";
 ?>
+
+<!-- http://localhost/venue/includes/generate_guest_hash.php
+trsutadmin = mpavs@Gurukul_6
+vithal - viThal@mpavs_3
+reena = mpavs@Reena_7
+vinaya = guru@Vinaya_9 -->
 
 
 <!-- This is the SQL statment to send password to guest_access_settings table.
