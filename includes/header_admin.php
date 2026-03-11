@@ -15,6 +15,12 @@
     <div class="bg-dark text-white p-3 d-print-none" style="width: 250px; background-color: #001d4a !important; min-height: 100vh; position: sticky; top: 0;">
         <h5 class="text-center mb-4 border-bottom pb-3">VMS ADMIN</h5>
         <ul class="nav flex-column gap-1">
+
+            <li class="nav-item">
+                <a href="dashboard_availability.php" class="nav-link text-white"><i class="bi bi-envelope-paper me-2"></i> Dashboard</a>
+            </li>
+
+
             <li class="nav-item">
                 <a href="enquiry_list.php" class="nav-link text-white"><i class="bi bi-envelope-paper me-2"></i> Enquiries</a>
             </li>

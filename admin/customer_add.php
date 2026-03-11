@@ -46,6 +46,15 @@ include("../includes/header_admin.php");
                                 <label class="form-label fw-bold">Email ID</label>
                                 <input type="email" name="email" class="form-control">
                             </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Membership Type</label>
+                                <select name="is_member" class="form-select">
+                                    <option value="0">General (Non-Member)</option>
+                                    <option value="1">Is Member</option>
+                                </select>
+                            </div>
+
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">PAN No</label>
                                 <input type="text" name="pan_no" class="form-control">

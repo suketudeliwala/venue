@@ -44,15 +44,24 @@ $enq_list = $conn->query("SELECT id, applicant_name, applicant_mobile FROM vms_e
                         <label class="form-label fw-bold">Email ID</label>
                         <input type="email" name="email" id="c_email" class="form-control">
                     </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Membership Status</label>
+                        <select name="is_member" id="c_is_member" class="form-select">
+                            <option value="0">General (Non-Member)</option>
+                            <option value="1">Is Member</option>
+                        </select>
+                    </div>
+
                     <div class="col-md-4">
                         <label class="form-label fw-bold">PAN No</label>
                         <input type="text" name="pan_no" class="form-control">
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">GST No</label>
                         <input type="text" name="gst_no" class="form-control">
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Remarks</label>
                         <input type="text" name="remarks" class="form-control">
                     </div>
@@ -77,38 +86,31 @@ document.getElementById('enq_selector').addEventListener('change', function() {
         return;
     }
 
-    // Attempt to fetch from the API
     fetch('../api/get_enquiry_details.php?id=' + id)
         .then(response => {
-            if (!response.ok) {
-                // If the file is missing or has a PHP error, this will catch it
-                throw new Error('Server returned ' + response.status + ' ' + response.statusText);
-            }
+            if (!response.ok) throw new Error('Server error: ' + response.statusText);
             return response.json();
         })
         .then(data => {
-            if(data.error) {
-                alert("Application Error: " + data.error);
-                return;
-            }
+            if(data.error) { alert(data.error); return; }
 
-            // Successfully received data
             form.style.display = 'block';
             
-            // Map the enquiry fields to customer form fields
+            // Map details
             document.getElementById('c_person').value = data.applicant_name || '';
             document.getElementById('c_mobile').value = data.applicant_mobile || '';
             document.getElementById('c_email').value = data.applicant_email || '';
             document.getElementById('c_address').value = data.applicant_address || '';
             
-            // Per your requirement: Use applicant name if company is empty
+            // Auto-set Membership Status
+            document.getElementById('c_is_member').value = data.is_member || 0;
+            
             document.getElementById('c_company').value = (data.company_name && data.company_name.trim() !== "") 
                 ? data.company_name 
                 : data.applicant_name;
         })
-        .catch(err => {
-            console.error('Fetch error:', err);
-            alert("Connection Error: " + err.message + "\n\nPossible causes:\n1. api/get_enquiry_details.php has a syntax error.\n2. The path ../api/ is incorrect for your setup.");
-        });
+        .catch(err => alert("Connection Error: " + err.message));
 });
 </script>
+
+<?php include("../includes/footer.php"); ?>

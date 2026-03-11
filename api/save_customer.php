@@ -21,15 +21,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $check_stmt->close();
 
     // 2. Proceed with Saving if no duplicate found
-    $sql = "INSERT INTO vms_customers (company_name, contact_person, address, phone, mobile, email, pan_no, gst_no, remarks, customer_type) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Customer')";
+    // Find line 22 approximately:
+    $sql = "INSERT INTO vms_customers (company_name, contact_person, address, phone, mobile, email, pan_no, gst_no, remarks, is_member, customer_type) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Customer')";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssss", 
+    $is_mem = isset($_POST['is_member']) ? intval($_POST['is_member']) : 0;
+    $stmt->bind_param("sssssssssi", 
         $_POST['company_name'], $contact_person, $_POST['address'], 
         $_POST['phone'], $mobile, $email, 
-        $_POST['pan_no'], $_POST['gst_no'], $_POST['remarks']
-    );
-    
+        $_POST['pan_no'], $_POST['gst_no'], $_POST['remarks'], $is_mem);    
+
     if($stmt->execute()) {
         header("Location: ../admin/customer_list.php?status=success&msg=Customer Added Successfully");
     } else {
