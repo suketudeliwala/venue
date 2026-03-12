@@ -91,4 +91,70 @@ $bal_rsd  = $booking['total_rsd'] - ($paid['paid_rsd'] ?? 0);
     </div>
 </div>
 
+<script>
+// Define the balance limits from PHP
+const maxRent = <?= $bal_rent ?>;
+const maxRSD = <?= $bal_rsd ?>;
+
+// Get references to the form elements
+const rentInput = document.querySelector('input[name="amount_rent"]');
+const rsdInput = document.querySelector('input[name="amount_rsd"]');
+const submitBtn = document.querySelector('button[type="submit"]');
+const receiptForm = document.querySelector('form');
+
+/**
+ * Main validation function that runs in real-time
+ */
+function validateReceipt() {
+    let rentVal = parseFloat(rentInput.value) || 0;
+    let rsdVal = parseFloat(rsdInput.value) || 0;
+
+    let rentError = false;
+    let rsdError = false;
+
+    // Validate Rent field
+    if (rentVal > maxRent) {
+        rentInput.classList.add('is-invalid', 'border-danger');
+        rentError = true;
+    } else {
+        rentInput.classList.remove('is-invalid', 'border-danger');
+    }
+
+    // Validate RSD field
+    if (rsdVal > maxRSD) {
+        rsdInput.classList.add('is-invalid', 'border-danger');
+        rsdError = true;
+    } else {
+        rsdInput.classList.remove('is-invalid', 'border-danger');
+    }
+
+    // Update UI and Button State
+    if (rentError || rsdError) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Error: Amount Exceeds Balance";
+        submitBtn.classList.replace('btn-success', 'btn-danger');
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Generate Receipt";
+        submitBtn.classList.replace('btn-danger', 'btn-success');
+    }
+}
+
+// 1. Attach Real-time listeners (detects typing/pasting)
+rentInput.addEventListener('input', validateReceipt);
+rsdInput.addEventListener('input', validateReceipt);
+
+// 2. Safety Catch on Form Submit
+receiptForm.onsubmit = function(e) {
+    let rentVal = parseFloat(rentInput.value) || 0;
+    let rsdVal = parseFloat(rsdInput.value) || 0;
+
+    if (rentVal > maxRent || rsdVal > maxRSD) {
+        alert("Action Blocked: You cannot collect more than the Balance Due.\nMax Rent: ₹" + maxRent + "\nMax RSD: ₹" + maxRSD);
+        return false; // Prevent form submission
+    }
+    return true; // Allow submission
+};
+</script>
+
 <?php include("../includes/footer.php"); ?>
